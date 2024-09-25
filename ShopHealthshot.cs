@@ -41,7 +41,7 @@ namespace ShopHealthshot
         {
             if (JsonHealthshot == null || SHOP_API == null) return;
 
-            SHOP_API.CreateCategory(CategoryName, "Шприцы");
+            SHOP_API.CreateCategory(CategoryName, "РЁРїСЂРёС†С‹");
 
             var sortedItems = JsonHealthshot
                 .Properties()
