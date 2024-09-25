@@ -6,13 +6,12 @@ using ShopAPI;
 
 namespace ShopHealthshot
 {
-    // [MinimumApiVersion(160)]
     public class ShopHealthshot : BasePlugin
     {
         public override string ModuleName => "[SHOP] Healthshot";
         public override string ModuleDescription => "";
         public override string ModuleAuthor => "E!N";
-        public override string ModuleVersion => "v1.0.0";
+        public override string ModuleVersion => "v1.0.1";
 
         private IShopApi? SHOP_API;
         private const string CategoryName = "Healthshots";
@@ -65,7 +64,7 @@ namespace ShopHealthshot
             RegisterListener<Listeners.OnClientDisconnect>(playerSlot => playerHealthshots[playerSlot] = null!);
         }
 
-        public void OnClientBuyItem(CCSPlayerController player, int itemId, string categoryName, string uniqueName, int buyPrice, int sellPrice, int duration, int count)
+        public HookResult OnClientBuyItem(CCSPlayerController player, int itemId, string categoryName, string uniqueName, int buyPrice, int sellPrice, int duration, int count)
         {
             if (TryGetNumberOfHealthshots(uniqueName, out int Healthshots))
             {
@@ -75,9 +74,10 @@ namespace ShopHealthshot
             {
                 Logger.LogError($"{uniqueName} has invalid or missing 'healthshots' in config!");
             }
+            return HookResult.Continue;
         }
 
-        public void OnClientToggleItem(CCSPlayerController player, int itemId, string uniqueName, int state)
+        public HookResult OnClientToggleItem(CCSPlayerController player, int itemId, string uniqueName, int state)
         {
             if (state == 1 && TryGetNumberOfHealthshots(uniqueName, out int Healthshots))
             {
@@ -87,11 +87,13 @@ namespace ShopHealthshot
             {
                 OnClientSellItem(player, itemId, uniqueName, 0);
             }
+            return HookResult.Continue;
         }
 
-        public void OnClientSellItem(CCSPlayerController player, int itemId, string uniqueName, int sellPrice)
+        public HookResult OnClientSellItem(CCSPlayerController player, int itemId, string uniqueName, int sellPrice)
         {
             playerHealthshots[player.Slot] = null!;
+            return HookResult.Continue;
         }
 
         [GameEventHandler]
